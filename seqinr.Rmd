@@ -1,0 +1,114 @@
+---
+title: "Seqinr"
+author: "Fatima Mawassi
+         Nathalia Gomide Cruz"
+date: "2023-12-05"
+output: pdf_document
+---
+```{r}
+
+```
+
+Install et load "seqinr":
+```{r}
+install.packages("seqinr")
+library("seqinr")
+```
+
+Ask for more information about a particular R command by using the help() function:
+```{r}
+??seqinr
+library(help=seqinr) 
+```
+
+Retrieving genome sequence data using SeqinR:
+
+Exemple:Borrelia burgdorferi genome sequence, which has NCBI accession "AC=CP000013", from the NCBI website.
+```{r}
+getncbiseq <- function(accession)
+choosebank("genbank")
+```
+
+
+Query: To get the sequence number and the list of sequence names from an ACNUC data base located on the web
+
+SP=taxon seqs attached to taxon or any other below in tree; @ wildcard possible:
+```{r}
+bb_sp <- query("bb", "sp=Borrelia burgdorferi")
+print (bb)
+```
+
+AC=accessionno seqs attached to specified accession number:
+```{r}
+bb_accession <- query("bb", "AC=CP000013")
+print (bb)
+```
+
+
+To get the names of the 1 and 4 first sequences:
+```{r}
+sapply(bb_accession$req[1], getName)
+sapply(bb_sp$req[1:4], getName)
+```
+
+To get the 4 first sequences:
+```{r}
+seq_comp = sapply(bb_accession$req[1], getSequence, as.string = TRUE)
+sapply(bb_sp$req[1:4], getSequence, as.string = TRUE)
+```
+
+To get the 50 nucleotides of the Borrelia burgdorferi sequence:
+```{r}
+seq <- getSequence(bb_accession$req[[1]])
+print(seq[1:50])
+```
+ 
+
+Writing sequence data out as a FASTA file = save sequence:
+```{r}
+write.fasta(names="BORBUR", sequences=seq, file.out="borbur.fasta")
+```
+
+Reading sequence data into R:
+```{r}
+borrelia <- read.fasta(file = "borbur.fasta")
+borrelia
+
+borrelia_seq <- borrelia[[1]]
+borrelia_seq
+```
+
+Length of a DNA sequence:
+
+```{r}
+getLength(borrelia_seq)
+```
+
+Base composition of a DNA sequence:
+
+```{r}
+table(borrelia_seq)
+```
+
+
+GC Content of DNA: One of the most fundamental properties of a genome sequence is its GC content, the fraction of the sequence that consists of Gs and Cs, ie. the %(G+C).
+
+```{r}
+GC(borrelia_seq)
+```
+
+DNA words: To find the number of occurrences of DNA words of a particular length, we can use the count() function from the R SeqinR package.
+
+```{r}
+count(borrelia_seq, 4
+      )
+```
+
+```{r}
+heights <- table(borrelia_seq)
+barplot(heights, main = "Composition en base", xlab = "Base", ylab = "Fréquence", col = c("skyblue", "red", "green", "purple"))
+```
+
+
+
+
